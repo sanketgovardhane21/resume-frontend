@@ -1,7 +1,7 @@
 "use client";
 
-import { useResume } from "@/context/ResumeContext";
-import { generatePdf } from "@/lib/api";
+import { useResume } from "../../../context/ResumeContext";
+import { generatePdf } from "../../../lib/api";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 

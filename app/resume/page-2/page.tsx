@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useResume } from "@/context/ResumeContext";
+import { useResume } from "../../../context/ResumeContext";
+import { improveBio } from "../../../lib/api";
 import { useRouter } from "next/navigation";
-import { improveBio } from "@/lib/api";
 
 export default function Step2() {
   const { resume, setResume } = useResume();

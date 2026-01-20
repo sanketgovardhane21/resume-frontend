@@ -1,6 +1,6 @@
 "use client";
 
-import { useResume } from "@/context/ResumeContext";
+import { useResume } from "../../../context/ResumeContext";
 import { useRouter } from "next/navigation";
 
 export default function Step4() {

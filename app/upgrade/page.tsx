@@ -1,7 +1,7 @@
 "use client";
 
-import { createOrder, verifyPayment } from "@/lib/api";
-import { useResume } from "@/context/ResumeContext";
+import { createOrder, verifyPayment } from "../../lib/api";
+import { useResume } from "../../context/ResumeContext";
 
 export default function UpgradePage() {
   const { resume, setResume } = useResume();

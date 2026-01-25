@@ -1,7 +1,7 @@
 "use client";
 
-import { createOrder, verifyPayment } from "../../lib/api";
-import { useResume } from "../../context/ResumeContext";
+import { createOrder, verifyPayment } from "../lib/api";
+import { useResume } from "../context/ResumeContext";
 
 type RazorpayResponse = {
   razorpay_order_id: string;

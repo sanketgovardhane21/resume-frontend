@@ -3,43 +3,64 @@
 import { createOrder, verifyPayment } from "../../lib/api";
 import { useResume } from "../../context/ResumeContext";
 
+type RazorpayResponse = {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+};
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
+
 export default function UpgradePage() {
   const { resume, setResume } = useResume();
 
- async function selectPlan(plan: "medium" | "pro") {
-  try {
-    const order = await createOrder(plan);
+  async function selectPlan(plan: "medium" | "pro") {
+    try {
+      if (!window.Razorpay) {
+        alert("Payment service not loaded. Please refresh.");
+        return;
+      }
 
-    const options = {
-      key: order.key, // public key
-      amount: order.amount,
-      currency: order.currency,
-      name: "ResumeCraft",
-      description: "Resume Upgrade",
-      order_id: order.orderId,
-      handler: async function (response: any) {
-        const verifyRes = await verifyPayment({
-          razorpay_order_id: response.razorpay_order_id,
-          razorpay_payment_id: response.razorpay_payment_id,
-          razorpay_signature: response.razorpay_signature,
-        });
+      const order = await createOrder(plan);
 
-        if (verifyRes.success) {
-          setResume({ ...resume, plan });
-          alert("Payment successful! Premium unlocked.");
-        }
-      },
-      theme: {
-        color: "#6366f1",
-      },
-    };
+      const options = {
+        key: order.key,
+        amount: order.amount,
+        currency: order.currency,
+        name: "ResumeCraft",
+        description: "Resume Upgrade",
+        order_id: order.orderId,
+        handler: async function (
+          response: RazorpayResponse
+        ) {
+          const verifyRes = await verifyPayment({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+          });
 
-    const rzp = new (window as any).Razorpay(options);
-    rzp.open();
-  } catch (err) {
-    alert("Payment failed. Try again.");
+          if (verifyRes.success) {
+            setResume({ ...resume, plan });
+            alert("Payment successful! Premium unlocked.");
+          } else {
+            alert("Payment verification failed.");
+          }
+        },
+        theme: {
+          color: "#6366f1",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      alert("Payment failed. Try again.");
+    }
   }
-}
 
   return (
     <main className="max-w-5xl mx-auto px-6 py-14">
@@ -72,7 +93,7 @@ export default function UpgradePage() {
           </button>
         </div>
 
-        {/* MEDIUM (BEST VALUE) */}
+        {/* MEDIUM */}
         <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-6 scale-105 shadow-xl">
           <div className="text-xs bg-black/30 inline-block px-3 py-1 rounded-full mb-3">
             BEST VALUE
@@ -118,7 +139,6 @@ export default function UpgradePage() {
         </div>
       </div>
 
-      {/* Trust Section */}
       <p className="text-center text-xs text-gray-500 mt-10">
         Secure payment • One-time purchase • No subscription • ATS-safe PDFs
       </p>

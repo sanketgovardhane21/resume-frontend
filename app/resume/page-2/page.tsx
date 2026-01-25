@@ -52,7 +52,7 @@ export default function Step2() {
       </button>
 
       <button
-        onClick={() => router.push("/resume/step-3")}
+        onClick={() => router.push("/resume/page-3")}
         className="w-full bg-indigo-600 py-3 rounded-lg"
       >
         Continue

@@ -1,5 +1,6 @@
 "use client";
 
+import { ChangeEvent } from "react";
 import { useResume } from "../../../context/ResumeContext";
 import { useRouter } from "next/navigation";
 
@@ -7,12 +8,16 @@ export default function Step1() {
   const { resume, setResume } = useResume();
   const router = useRouter();
 
-  function handleChange(e: any) {
+  function handleChange(
+    e: ChangeEvent<HTMLInputElement>
+  ) {
+    const { name, value } = e.target;
+
     setResume({
       ...resume,
       personal: {
         ...resume.personal,
-        [e.target.name]: e.target.value,
+        [name]: value,
       },
     });
   }
@@ -51,31 +56,38 @@ export default function Step1() {
         className="w-full mb-3 p-3 rounded bg-[#1a1a24]"
       />
 
-      <p className="text-sm text-gray-400 mb-2">Available to Join</p>
+      <p className="text-sm text-gray-400 mb-2">
+        Available to Join
+      </p>
 
       <div className="flex gap-2 mb-6">
-        {["Immediately", "15 days", "1 Month", "Flexible"].map((opt) => (
-          <button
-            key={opt}
-            onClick={() =>
-              setResume({
-                ...resume,
-                personal: { ...resume.personal, availability: opt },
-              })
-            }
-            className={`px-3 py-2 rounded ${
-              resume.personal.availability === opt
-                ? "bg-indigo-600"
-                : "bg-[#1a1a24]"
-            }`}
-          >
-            {opt}
-          </button>
-        ))}
+        {["Immediately", "15 days", "1 Month", "Flexible"].map(
+          (opt) => (
+            <button
+              key={opt}
+              onClick={() =>
+                setResume({
+                  ...resume,
+                  personal: {
+                    ...resume.personal,
+                    availability: opt,
+                  },
+                })
+              }
+              className={`px-3 py-2 rounded ${
+                resume.personal.availability === opt
+                  ? "bg-indigo-600"
+                  : "bg-[#1a1a24]"
+              }`}
+            >
+              {opt}
+            </button>
+          )
+        )}
       </div>
 
       <button
-        onClick={() => router.push("/resume/step-2")}
+        onClick={() => router.push("/resume/page-2")}
         className="w-full bg-indigo-600 py-3 rounded-lg"
       >
         Continue

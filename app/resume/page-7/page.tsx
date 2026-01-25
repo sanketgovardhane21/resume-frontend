@@ -7,15 +7,18 @@ import { useRouter } from "next/navigation";
 
 export default function Step7() {
   const { resume, setResume } = useResume();
-
   const router = useRouter();
 
   useEffect(() => {
-    if (!resume.personal.name || !resume.bio || resume.skills.length < 3) {
-      router.replace("/resume/step-1");
+    if (
+      !resume.personal?.name ||
+      !resume.bio ||
+      !resume.skills ||
+      resume.skills.length < 3
+    ) {
+      router.replace("/resume/page-1");
     }
-  }, []);
-
+  }, [resume, router]);
 
   const freeThemes = ["free-1", "free-2", "free-3"];
   const premiumThemes = ["premium-1", "premium-2"];
@@ -29,14 +32,15 @@ export default function Step7() {
       a.href = url;
       a.download = "resume.pdf";
       a.click();
+
+      window.URL.revokeObjectURL(url);
     } catch (err) {
       alert("Failed to generate PDF");
     }
   }
 
   function handleUpgrade() {
-    // Later → redirect to subscription page
-    window.location.href = "/upgrade";
+    router.push("/upgrade");
   }
 
   return (
@@ -49,7 +53,9 @@ export default function Step7() {
       <div className="mb-6 p-4 bg-white text-black rounded text-sm">
         <p className="font-bold">{resume.personal.name}</p>
         <p className="text-xs">{resume.bio}</p>
-        <p className="text-xs mt-2">Skills: {resume.skills.join(", ")}</p>
+        <p className="text-xs mt-2">
+          Skills: {resume.skills.join(", ")}
+        </p>
       </div>
 
       {/* Free Themes */}

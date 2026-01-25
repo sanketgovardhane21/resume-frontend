@@ -1,7 +1,7 @@
 "use client";
 
 import { ChangeEvent } from "react";
-import { useResume } from "../../../context/ResumeContext";
+import { useResume } from "../../context/ResumeContext";
 import { useRouter } from "next/navigation";
 
 export default function Step1() {

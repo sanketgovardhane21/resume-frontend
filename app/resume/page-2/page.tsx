@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useResume } from "../../../context/ResumeContext";
-import { improveBio } from "../../../lib/api";
+import { useResume } from "../../context/ResumeContext";
+import { improveBio } from "../../lib/api";
 import { useRouter } from "next/navigation";
 
 export default function Step2() {

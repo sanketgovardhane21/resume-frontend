@@ -24,14 +24,18 @@ export default function Step6() {
     });
   }
 
-  function updateCertification(index: number, field: string, value: string) {
+  function updateCertification(
+    index: number,
+    field: keyof (typeof resume.certifications)[number],
+    value: string
+  ) {
     const updated = [...resume.certifications];
     updated[index] = { ...updated[index], [field]: value };
     setResume({ ...resume, certifications: updated });
   }
 
   function handleNext() {
-    router.push("/resume/step-7");
+    router.push("/resume/page-7");
   }
 
   return (

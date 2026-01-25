@@ -10,7 +10,7 @@ export default function Home() {
       </p>
 
       <a
-        href="/resume/step-1"
+        href="/resume/page-1"
         className="bg-indigo-600 hover:bg-indigo-700 px-6 py-3 rounded-lg font-medium"
       >
         Create Resume

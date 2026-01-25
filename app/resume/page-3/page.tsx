@@ -10,12 +10,13 @@ export default function Step3() {
   const router = useRouter();
 
   function addSkill() {
-    if (!skillInput.trim()) return;
-    if (resume.skills.includes(skillInput)) return;
+    const skill = skillInput.trim();
+    if (!skill) return;
+    if (resume.skills.includes(skill)) return;
 
     setResume({
       ...resume,
-      skills: [...resume.skills, skillInput],
+      skills: [...resume.skills, skill],
     });
 
     setSkillInput("");
@@ -35,9 +36,9 @@ export default function Step3() {
     }
 
     if (resume.isFresher) {
-      router.push("/resume/step-5"); // skip experience
+      router.push("/resume/page-5"); // skip experience
     } else {
-      router.push("/resume/step-4");
+      router.push("/resume/page-4");
     }
   }
 

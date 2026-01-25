@@ -1,10 +1,11 @@
 import Script from "next/script";
-import { ResumeProvider } from "@/context/ResumeContext";
+import type { ReactNode } from "react";
+import { ResumeProvider } from "../context/ResumeContext";
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: ReactNode;
 }) {
   return (
     <html lang="en">

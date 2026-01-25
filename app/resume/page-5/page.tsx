@@ -25,7 +25,11 @@ export default function Step5() {
     });
   }
 
-  function updateEducation(index: number, field: string, value: string) {
+  function updateEducation(
+    index: number,
+    field: keyof (typeof resume.education)[number],
+    value: string
+  ) {
     const updated = [...resume.education];
     updated[index] = { ...updated[index], [field]: value };
     setResume({ ...resume, education: updated });
@@ -37,7 +41,7 @@ export default function Step5() {
       return;
     }
 
-    router.push("/resume/step-6");
+    router.push("/resume/page-6");
   }
 
   return (
@@ -91,7 +95,11 @@ export default function Step5() {
             placeholder="Specialization (optional)"
             value={edu.specialization}
             onChange={(e) =>
-              updateEducation(idx, "specialization", e.target.value)
+              updateEducation(
+                idx,
+                "specialization",
+                e.target.value
+              )
             }
             className="w-full p-2 rounded bg-[#0f0f14]"
           />

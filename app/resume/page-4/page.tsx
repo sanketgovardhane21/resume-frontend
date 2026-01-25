@@ -25,7 +25,11 @@ export default function Step4() {
     });
   }
 
-  function updateExperience(index: number, field: string, value: string) {
+  function updateExperience(
+    index: number,
+    field: keyof (typeof resume.experience)[number],
+    value: string
+  ) {
     const updated = [...resume.experience];
     updated[index] = { ...updated[index], [field]: value };
 
@@ -38,7 +42,7 @@ export default function Step4() {
       return;
     }
 
-    router.push("/resume/step-5");
+    router.push("/resume/page-5");
   }
 
   return (
@@ -93,7 +97,11 @@ export default function Step4() {
             placeholder="Description (optional)"
             value={exp.description}
             onChange={(e) =>
-              updateExperience(idx, "description", e.target.value)
+              updateExperience(
+                idx,
+                "description",
+                e.target.value
+              )
             }
             className="w-full p-2 rounded bg-[#0f0f14]"
           />

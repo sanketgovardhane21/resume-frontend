@@ -1,39 +1,8 @@
 "use client";
 
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
-/* ---------- TYPES ---------- */
-
-type Experience = {
-  role: string;
-  company: string;
-  from: string;
-  to: string;
-  description: string;
-};
-
-type Education = {
-  degree: string;
-  institute: string;
-  year: string;
-  score?: string;
-  specialization?: string;
-};
-
-type Certification = {
-  name: string;
-  issuer: string;
-  year?: string;
-  url?: string;
-};
-
-export type ResumeData = {
+type ResumeData = {
   personal: {
     name: string;
     email: string;
@@ -45,19 +14,12 @@ export type ResumeData = {
   jobRole: string;
   isFresher: boolean;
   skills: string[];
-  experience: Experience[];
-  education: Education[];
-  certifications: Certification[];
+  experience: any[];
+  education: any[];
+  certifications: any[];
   theme: string;
   plan: "free" | "medium" | "pro";
 };
-
-type ResumeContextType = {
-  resume: ResumeData;
-  setResume: React.Dispatch<React.SetStateAction<ResumeData>>;
-};
-
-/* ---------- DEFAULT STATE ---------- */
 
 const defaultResume: ResumeData = {
   personal: {
@@ -78,37 +40,13 @@ const defaultResume: ResumeData = {
   plan: "free",
 };
 
-/* ---------- CONTEXT ---------- */
+const ResumeContext = createContext<any>(null);
 
-const ResumeContext = createContext<ResumeContextType | null>(
-  null
-);
+export function ResumeProvider({ children }: { children: React.ReactNode }) {
+  const [resume, setResume] = useState<ResumeData>(defaultResume);
 
-/* ---------- PROVIDER ---------- */
-
-export function ResumeProvider({
-  children,
-}: {
-  children: ReactNode;
-}) {
-  const [resume, setResume] = useState<ResumeData>(
-    defaultResume
-  );
-
-  // Load from localStorage (client only)
   useEffect(() => {
-    const saved = localStorage.getItem("resume-data");
-    if (saved) {
-      setResume(JSON.parse(saved));
-    }
-  }, []);
-
-  // Save to localStorage
-  useEffect(() => {
-    localStorage.setItem(
-      "resume-data",
-      JSON.stringify(resume)
-    );
+    localStorage.setItem("resume-data", JSON.stringify(resume));
   }, [resume]);
 
   return (
@@ -118,14 +56,6 @@ export function ResumeProvider({
   );
 }
 
-/* ---------- HOOK ---------- */
-
 export function useResume() {
-  const ctx = useContext(ResumeContext);
-  if (!ctx) {
-    throw new Error(
-      "useResume must be used inside ResumeProvider"
-    );
-  }
-  return ctx;
+  return useContext(ResumeContext);
 }

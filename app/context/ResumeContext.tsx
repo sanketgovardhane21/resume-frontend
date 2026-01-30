@@ -2,6 +2,8 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 
+/* ---------- TYPES ---------- */
+
 type ResumeData = {
   personal: {
     name: string;
@@ -20,6 +22,13 @@ type ResumeData = {
   theme: string;
   plan: "free" | "medium" | "pro";
 };
+
+type ResumeContextType = {
+  resume: ResumeData;
+  updateResume: (data: Partial<ResumeData>) => void;
+};
+
+/* ---------- DEFAULT ---------- */
 
 const defaultResume: ResumeData = {
   personal: {
@@ -40,22 +49,48 @@ const defaultResume: ResumeData = {
   plan: "free",
 };
 
-const ResumeContext = createContext<any>(null);
+/* ---------- CONTEXT ---------- */
+
+const ResumeContext = createContext<ResumeContextType | null>(null);
+
+/* ---------- PROVIDER ---------- */
 
 export function ResumeProvider({ children }: { children: React.ReactNode }) {
   const [resume, setResume] = useState<ResumeData>(defaultResume);
 
+  /* Load from localStorage */
+  useEffect(() => {
+    const saved = localStorage.getItem("resume-data");
+    if (saved) {
+      setResume(JSON.parse(saved));
+    }
+  }, []);
+
+  /* Save to localStorage */
   useEffect(() => {
     localStorage.setItem("resume-data", JSON.stringify(resume));
   }, [resume]);
 
+  const updateResume = (data: Partial<ResumeData>) => {
+    setResume((prev) => ({
+      ...prev,
+      ...data,
+    }));
+  };
+
   return (
-    <ResumeContext.Provider value={{ resume, setResume }}>
+    <ResumeContext.Provider value={{ resume, updateResume }}>
       {children}
     </ResumeContext.Provider>
   );
 }
 
+/* ---------- HOOK ---------- */
+
 export function useResume() {
-  return useContext(ResumeContext);
+  const ctx = useContext(ResumeContext);
+  if (!ctx) {
+    throw new Error("useResume must be used inside ResumeProvider");
+  }
+  return ctx;
 }

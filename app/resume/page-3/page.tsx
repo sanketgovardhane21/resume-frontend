@@ -1,5 +1,7 @@
 "use client";
 
+import { useResume } from "@/app/context/ResumeContext";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const suggestedSkills = [
@@ -17,11 +19,11 @@ const suggestedSkills = [
 ];
 
 export default function ResumeStepThree() {
-  const [skills, setSkills] = useState<string[]>([
-    "Python",
-    "Team Leadership",
-    "SQL",
-  ]);
+  const router = useRouter();
+  const { resume, updateResume } = useResume();
+
+  const [jobRole, setJobRole] = useState(resume.jobRole);
+  const [skills, setSkills] = useState<string[]>(resume.skills);
 
   const toggleSkill = (skill: string) => {
     if (skills.includes(skill)) {
@@ -33,15 +35,12 @@ export default function ResumeStepThree() {
 
   return (
     <main className="min-h-screen bg-[var(--bg)] text-[var(--text-main)]">
-      {/* PAGE CONTENT */}
       <div className="mx-auto max-w-[420px] px-4 pt-6 pb-32">
-        {/* TOP BAR */}
         <div className="flex items-center justify-between text-sm text-[var(--text-sub)]">
           <span>ResumeCraft</span>
           <span>3 / 7</span>
         </div>
 
-        {/* STEP HEADER */}
         <div className="mt-6">
           <div className="flex items-center gap-3">
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-sm font-semibold text-white">
@@ -52,7 +51,6 @@ export default function ResumeStepThree() {
             </h1>
           </div>
 
-          {/* PROGRESS BAR */}
           <div className="mt-4 h-1 w-full rounded-full bg-[var(--border)]">
             <div className="h-1 w-[42%] rounded-full bg-[var(--primary)]" />
           </div>
@@ -69,8 +67,12 @@ export default function ResumeStepThree() {
           </label>
 
           <div className="relative">
-            <select className="input appearance-none pr-10">
-              <option>Select Job Role</option>
+            <select
+              className="input appearance-none pr-10"
+              value={jobRole}
+              onChange={(e) => setJobRole(e.target.value)}
+            >
+              <option value="">Select Job Role</option>
               <option>Software Engineer</option>
               <option>Data Analyst</option>
               <option>Backend Developer</option>
@@ -84,7 +86,7 @@ export default function ResumeStepThree() {
           </div>
         </div>
 
-        {/* SELECTED SKILLS */}
+        {/* SKILLS */}
         <div className="mt-6">
           <label className="mb-2 block text-sm font-medium">
             Key Skills
@@ -99,15 +101,9 @@ export default function ResumeStepThree() {
                 {skill}
               </span>
             ))}
-
-            <input
-              className="min-w-[80px] flex-1 bg-transparent text-sm outline-none placeholder-[var(--text-muted)]"
-              placeholder="Add skill..."
-            />
           </div>
         </div>
 
-        {/* SUGGESTED SKILLS */}
         <div className="mt-6">
           <p className="mb-3 text-sm text-[var(--text-sub)]">
             Pick from suggestions
@@ -132,13 +128,19 @@ export default function ResumeStepThree() {
         </div>
       </div>
 
-      {/* STICKY ACTION BUTTONS */}
+      {/* ACTIONS */}
       <div className="fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[var(--bg)] px-4 py-4">
         <div className="mx-auto max-w-[420px] flex gap-3">
           <button className="w-full rounded-xl bg-[var(--input)] py-3 text-sm font-medium text-[var(--text-sub)]">
             Skip
           </button>
-          <button className="w-full rounded-xl bg-[var(--primary)] py-3 text-sm font-semibold text-white">
+          <button
+            onClick={() => {
+              updateResume({ jobRole, skills });
+              router.push("/resume/page-4");
+            }}
+            className="w-full rounded-xl bg-[var(--primary)] py-3 text-sm font-semibold text-white"
+          >
             Continue
           </button>
         </div>

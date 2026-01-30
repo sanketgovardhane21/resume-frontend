@@ -1,147 +1,93 @@
 "use client";
 
-import { createOrder, verifyPayment } from "../lib/api";
-import { useResume } from "../context/ResumeContext";
-
-type RazorpayResponse = {
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-};
-
-declare global {
-  interface Window {
-    Razorpay: any;
-  }
-}
-
 export default function UpgradePage() {
-  const { resume, setResume } = useResume();
-
-  async function selectPlan(plan: "medium" | "pro") {
-    try {
-      if (!window.Razorpay) {
-        alert("Payment service not loaded. Please refresh.");
-        return;
-      }
-
-      const order = await createOrder(plan);
-
-      const options = {
-        key: order.key,
-        amount: order.amount,
-        currency: order.currency,
-        name: "ResumeCraft",
-        description: "Resume Upgrade",
-        order_id: order.orderId,
-        handler: async function (
-          response: RazorpayResponse
-        ) {
-          const verifyRes = await verifyPayment({
-            razorpay_order_id: response.razorpay_order_id,
-            razorpay_payment_id: response.razorpay_payment_id,
-            razorpay_signature: response.razorpay_signature,
-          });
-
-          if (verifyRes.success) {
-            setResume({ ...resume, plan });
-            alert("Payment successful! Premium unlocked.");
-          } else {
-            alert("Payment verification failed.");
-          }
-        },
-        theme: {
-          color: "#6366f1",
-        },
-      };
-
-      const rzp = new window.Razorpay(options);
-      rzp.open();
-    } catch (err) {
-      alert("Payment failed. Try again.");
-    }
-  }
-
   return (
-    <main className="max-w-5xl mx-auto px-6 py-14">
-      <h1 className="text-3xl font-bold text-center mb-4">
-        Upgrade Your Resume
-      </h1>
-      <p className="text-center text-gray-400 mb-10">
-        One-time payment • ATS-friendly • Instant download
-      </p>
-
-      <div className="grid md:grid-cols-3 gap-6">
-        {/* FREE */}
-        <div className="bg-[#1a1a24] rounded-xl p-6 border border-gray-700">
-          <h3 className="text-xl font-semibold mb-2">Free</h3>
-          <p className="text-gray-400 mb-4">₹0</p>
-
-          <ul className="text-sm space-y-2 mb-6">
-            <li>✔ 3 ATS-friendly themes</li>
-            <li>✔ Alignment control</li>
-            <li>✔ Font size control</li>
-            <li>✖ Premium themes</li>
-            <li>✖ Advanced customization</li>
-          </ul>
-
-          <button
-            disabled
-            className="w-full py-3 rounded-lg bg-gray-700 cursor-not-allowed"
-          >
-            Current Plan
-          </button>
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text-main)]">
+      <div className="mx-auto max-w-[420px] px-4 pt-6 pb-24">
+        {/* HEADER */}
+        <div className="flex items-center justify-between">
+          <button className="text-xl text-[var(--text-sub)]">✕</button>
+          <h1 className="text-base font-semibold">ResumeCraft</h1>
+          <div className="w-6" />
         </div>
 
-        {/* MEDIUM */}
-        <div className="bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl p-6 scale-105 shadow-xl">
-          <div className="text-xs bg-black/30 inline-block px-3 py-1 rounded-full mb-3">
-            BEST VALUE
+        {/* TITLE */}
+        <div className="mt-8 text-center">
+          <h2 className="text-2xl font-bold">Upgrade to Premium</h2>
+          <p className="mt-3 text-sm text-[var(--text-sub)]">
+            Unlock all premium features and maximize your job search success!
+          </p>
+        </div>
+
+        {/* PLANS */}
+        <div className="mt-10 grid grid-cols-2 gap-4">
+          {/* LIFETIME */}
+          <div className="rounded-2xl border border-yellow-500 bg-gradient-to-b from-[#2a2415] to-[#16120a] p-4">
+            <span className="mb-2 inline-block rounded-full bg-yellow-600 px-3 py-1 text-xs font-semibold text-black">
+              BEST VALUE
+            </span>
+
+            <h3 className="mt-2 text-lg font-semibold">Lifetime Plan</h3>
+            <p className="mt-1 text-xs text-[var(--text-sub)]">
+              One-time payment
+            </p>
+
+            <p className="mt-6 text-3xl font-bold">₹699</p>
+
+            <ul className="mt-4 space-y-2 text-sm text-[var(--text-sub)]">
+              <li>✔ Lifetime Access</li>
+            </ul>
+
+            <button className="mt-6 w-full rounded-xl bg-gradient-to-r from-yellow-500 to-yellow-400 py-3 text-sm font-semibold text-black">
+              Upgrade – ₹699
+            </button>
           </div>
 
-          <h3 className="text-xl font-semibold mb-2">Medium</h3>
-          <p className="text-2xl font-bold mb-4">₹399</p>
+          {/* YEARLY */}
+          <div className="rounded-2xl border border-[var(--border)] bg-[var(--surface)] p-4">
+            <h3 className="text-lg font-semibold">Yearly Plan</h3>
+            <p className="mt-1 text-xs text-[var(--text-sub)]">
+              Billed annually. Cancel anytime.
+            </p>
 
-          <ul className="text-sm space-y-2 mb-6">
-            <li>✔ Everything in Free</li>
-            <li>✔ All premium themes</li>
-            <li>✔ Better layout balance</li>
-            <li>✔ More font options</li>
-            <li>✔ Priority PDF rendering</li>
-          </ul>
+            <p className="mt-6 text-3xl font-bold">
+              ₹399 <span className="text-sm font-medium">/ year</span>
+            </p>
 
-          <button
-            onClick={() => selectPlan("medium")}
-            className="w-full py-3 rounded-lg bg-black/30 hover:bg-black/40"
-          >
-            Upgrade to Medium
-          </button>
+            <button className="mt-10 w-full rounded-xl bg-[var(--primary)] py-3 text-sm font-semibold text-white">
+              Upgrade – ₹399 / year
+            </button>
+          </div>
         </div>
 
-        {/* PRO */}
-        <div className="bg-[#1a1a24] rounded-xl p-6 border border-gray-700">
-          <h3 className="text-xl font-semibold mb-2">Pro</h3>
-          <p className="text-2xl font-bold mb-4">₹699</p>
+        {/* FEATURES */}
+        <div className="mt-10">
+          <h4 className="mb-4 text-center text-sm font-semibold text-[var(--text-sub)]">
+            Premium Features
+          </h4>
 
-          <ul className="text-sm space-y-2 mb-6">
-            <li>✔ Everything in Medium</li>
-            <li>✔ Extra premium layouts</li>
-            <li>✔ Maximum customization</li>
-            <li>✔ Best visual polish</li>
+          <ul className="space-y-3 text-sm text-[var(--text-sub)]">
+            <li>✔ Unlock All Premium Resume Themes</li>
+            <li>✔ Advanced Customization Options</li>
+            <li>✔ Remove ResumeCraft Branding</li>
+            <li>✔ Priority Customer Support</li>
           </ul>
+        </div>
 
-          <button
-            onClick={() => selectPlan("pro")}
-            className="w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700"
-          >
-            Upgrade to Pro
+        {/* FOOTER */}
+        <div className="mt-10 text-center text-xs text-[var(--text-muted)]">
+          Recurring billing. You can cancel at any time.
+        </div>
+
+        <div className="mt-6 flex justify-between gap-4">
+          <button className="w-full rounded-xl bg-[var(--input)] py-3 text-sm text-[var(--text-sub)]">
+            Restore Purchases
+          </button>
+          <button className="w-full rounded-xl bg-[var(--input)] py-3 text-sm text-[var(--text-sub)]">
+            Terms & Conditions
           </button>
         </div>
       </div>
-
-      <p className="text-center text-xs text-gray-500 mt-10">
-        Secure payment • One-time purchase • No subscription • ATS-safe PDFs
-      </p>
     </main>
   );
 }

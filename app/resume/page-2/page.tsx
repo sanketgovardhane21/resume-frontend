@@ -1,62 +1,81 @@
 "use client";
 
-import { useState } from "react";
-import { useResume } from "../../context/ResumeContext";
-import { improveBio } from "../../lib/api";
-import { useRouter } from "next/navigation";
-
-export default function Step2() {
-  const { resume, setResume } = useResume();
-  const [loading, setLoading] = useState(false);
-  const router = useRouter();
-
-  async function handleAIImprove() {
-    if (!resume.bio) return;
-
-    try {
-      setLoading(true);
-      const data = await improveBio(resume.bio);
-
-      setResume({
-        ...resume,
-        bio: data.bio,
-      });
-    } catch (err) {
-      alert("AI failed. Try again later.");
-    } finally {
-      setLoading(false);
-    }
-  }
-
+export default function ResumeStepTwo() {
   return (
-    <main className="max-w-md mx-auto px-4 py-10">
-      <h2 className="text-xl font-semibold mb-4">
-        Step 2 of 7 – Professional Bio
-      </h2>
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text-main)]">
+      {/* PAGE CONTENT */}
+      <div className="mx-auto max-w-[420px] px-4 pt-6 pb-32">
+        {/* TOP BAR */}
+        <div className="flex items-center justify-between text-sm text-[var(--text-sub)]">
+          <span>ResumeCraft</span>
+          <span>2 / 7</span>
+        </div>
 
-      <textarea
-        value={resume.bio}
-        onChange={(e) =>
-          setResume({ ...resume, bio: e.target.value })
-        }
-        placeholder="Write a short professional bio..."
-        className="w-full h-32 p-3 rounded bg-[#1a1a24] mb-4"
-      />
+        {/* STEP HEADER */}
+        <div className="mt-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-sm font-semibold text-white">
+              2
+            </div>
+            <h1 className="text-lg font-semibold">
+              Bio & Summary
+            </h1>
+          </div>
 
-      <button
-        onClick={handleAIImprove}
-        disabled={loading}
-        className="w-full mb-6 bg-purple-600 py-2 rounded-lg disabled:opacity-50"
-      >
-        {loading ? "Improving..." : "✨ Improve with AI"}
-      </button>
+          {/* PROGRESS BAR */}
+          <div className="mt-4 h-1 w-full rounded-full bg-[var(--border)]">
+            <div className="h-1 w-[28%] rounded-full bg-[var(--primary)]" />
+          </div>
 
-      <button
-        onClick={() => router.push("/resume/page-3")}
-        className="w-full bg-indigo-600 py-3 rounded-lg"
-      >
-        Continue
-      </button>
+          <p className="mt-3 text-sm text-[var(--text-sub)]">
+            Time to add a brief introduction about yourself.
+          </p>
+        </div>
+
+        {/* BIO INPUT */}
+        <div className="mt-8">
+          <label className="mb-2 block text-sm font-medium">
+            Professional Bio{" "}
+            <span className="text-[var(--text-muted)]">
+              (Optional)
+            </span>
+          </label>
+
+          <div className="relative">
+            <textarea
+              className="w-full rounded-xl bg-[var(--input)]
+                         border border-[var(--border)]
+                         p-4 pr-14 text-sm text-[var(--text-main)]
+                         placeholder-[var(--text-muted)]
+                         focus:outline-none focus:border-[var(--primary)]
+                         min-h-[120px]"
+              placeholder="Automatically write your bio in seconds using AI"
+            />
+
+            {/* AI BUTTON */}
+            <button
+              type="button"
+              className="absolute bottom-3 right-3 flex h-10 w-10
+                         items-center justify-center rounded-lg
+                         bg-[var(--primary)] text-white"
+            >
+              ✨
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* STICKY ACTION BUTTONS */}
+      <div className="fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[var(--bg)] px-4 py-4">
+        <div className="mx-auto max-w-[420px] flex gap-3">
+          <button className="w-full rounded-xl bg-[var(--input)] py-3 text-sm font-medium text-[var(--text-sub)]">
+            Skip
+          </button>
+          <button className="w-full rounded-xl bg-[var(--primary)] py-3 text-sm font-semibold text-white">
+            Continue
+          </button>
+        </div>
+      </div>
     </main>
   );
 }

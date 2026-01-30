@@ -1,147 +1,167 @@
 "use client";
 
-import { useResume } from "../../context/ResumeContext";
-import { generatePdf } from "../../lib/api";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function Step7() {
-  const { resume, setResume } = useResume();
-  const router = useRouter();
-
-  useEffect(() => {
-    if (
-      !resume.personal?.name ||
-      !resume.bio ||
-      !resume.skills ||
-      resume.skills.length < 3
-    ) {
-      router.replace("/resume/page-1");
-    }
-  }, [resume, router]);
-
-  const freeThemes = ["free-1", "free-2", "free-3"];
-  const premiumThemes = ["premium-1", "premium-2"];
-
-  async function handleDownload() {
-    try {
-      const pdfBlob = await generatePdf(resume);
-      const url = window.URL.createObjectURL(pdfBlob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "resume.pdf";
-      a.click();
-
-      window.URL.revokeObjectURL(url);
-    } catch (err) {
-      alert("Failed to generate PDF");
-    }
-  }
-
-  function handleUpgrade() {
-    router.push("/upgrade");
-  }
+export default function ResumeStepSeven() {
+  const [theme, setTheme] = useState<"modern" | "elegant">("modern");
+  const [alignment, setAlignment] = useState<"left" | "center">("left");
+  const [fontSize, setFontSize] = useState<"small" | "normal">("small");
 
   return (
-    <main className="max-w-md mx-auto px-4 py-10">
-      <h2 className="text-xl font-semibold mb-6">
-        Step 7 of 7 – Theme & Download
-      </h2>
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text-main)]">
+      {/* PAGE CONTENT */}
+      <div className="mx-auto max-w-[420px] px-4 pt-6 pb-32">
+        {/* TOP BAR */}
+        <div className="flex items-center justify-between text-sm text-[var(--text-sub)]">
+          <span>ResumeCraft</span>
+          <span>7 / 7</span>
+        </div>
 
-      {/* Resume Preview */}
-      <div className="mb-6 p-4 bg-white text-black rounded text-sm">
-        <p className="font-bold">{resume.personal.name}</p>
-        <p className="text-xs">{resume.bio}</p>
-        <p className="text-xs mt-2">
-          Skills: {resume.skills.join(", ")}
-        </p>
-      </div>
-
-      {/* Free Themes */}
-      <h3 className="text-sm text-gray-400 mb-2">Free ATS Themes</h3>
-      <div className="flex gap-2 mb-4">
-        {freeThemes.map((t) => (
-          <button
-            key={t}
-            onClick={() =>
-              setResume({ ...resume, theme: t, plan: "free" })
-            }
-            className={`px-3 py-2 rounded ${
-              resume.theme === t
-                ? "bg-indigo-600"
-                : "bg-[#1a1a24]"
-            }`}
-          >
-            {t.toUpperCase()}
-          </button>
-        ))}
-      </div>
-
-      {/* Alignment & Font (Free only) */}
-      {resume.plan === "free" && (
-        <div className="mb-6">
-          <p className="text-sm text-gray-400 mb-2">Alignment</p>
-          <div className="flex gap-2 mb-3">
-            {["Left", "Center"].map((opt) => (
-              <button
-                key={opt}
-                className="px-3 py-2 bg-[#1a1a24] rounded"
-              >
-                {opt}
-              </button>
-            ))}
+        {/* STEP HEADER */}
+        <div className="mt-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-sm font-semibold text-white">
+              7
+            </div>
+            <h1 className="text-lg font-semibold">Wrap Up</h1>
           </div>
 
-          <p className="text-sm text-gray-400 mb-2">Font Size</p>
-          <div className="flex gap-2">
-            {["Small", "Normal"].map((opt) => (
+          <div className="mt-4 h-1 w-full rounded-full bg-[var(--border)]">
+            <div className="h-1 w-full rounded-full bg-[var(--primary)]" />
+          </div>
+
+          <p className="mt-3 text-sm text-[var(--text-sub)]">
+            Customize your resume and download PDF.
+          </p>
+        </div>
+
+        {/* THEME SELECTION */}
+        <div className="mt-8">
+          <div className="grid grid-cols-2 gap-4">
+            {/* MODERN */}
+            <button
+              onClick={() => setTheme("modern")}
+              className={`rounded-xl border p-3 text-left transition
+                ${
+                  theme === "modern"
+                    ? "border-[var(--primary)]"
+                    : "border-[var(--border)]"
+                }`}
+            >
+              <div className="mb-2 h-28 rounded-lg bg-white" />
+              <p className="font-medium">Modern</p>
+              <p className="text-xs text-[var(--text-sub)]">
+                Free Theme
+              </p>
+            </button>
+
+            {/* ELEGANT */}
+            <button
+              onClick={() => setTheme("elegant")}
+              className={`rounded-xl border p-3 text-left transition
+                ${
+                  theme === "elegant"
+                    ? "border-[var(--primary)]"
+                    : "border-[var(--border)]"
+                }`}
+            >
+              <div className="mb-2 h-28 rounded-lg bg-white" />
+              <p className="font-medium">Elegant</p>
+              <p className="text-xs text-[var(--text-sub)]">
+                Premium Theme
+              </p>
+
+              <div className="mt-2 rounded-lg bg-[var(--primary)] py-1 text-center text-xs text-white">
+                Upgrade ₹399 / ₹699
+              </div>
+            </button>
+          </div>
+        </div>
+
+        {/* ALIGNMENT */}
+        <div className="mt-6">
+          <p className="mb-2 text-sm font-medium">Alignment</p>
+          <div className="flex gap-3">
+            {["left", "center"].map((item) => (
               <button
-                key={opt}
-                className="px-3 py-2 bg-[#1a1a24] rounded"
+                key={item}
+                onClick={() =>
+                  setAlignment(item as "left" | "center")
+                }
+                className={`rounded-lg px-4 py-2 text-sm
+                  ${
+                    alignment === item
+                      ? "bg-[var(--primary)] text-white"
+                      : "bg-[var(--input)] text-[var(--text-sub)]"
+                  }`}
               >
-                {opt}
+                {item.charAt(0).toUpperCase() + item.slice(1)}
               </button>
             ))}
           </div>
         </div>
-      )}
 
-      {/* Premium Themes */}
-      <h3 className="text-sm text-gray-400 mb-2">Premium Themes</h3>
-      <div className="flex gap-2 mb-6">
-        {premiumThemes.map((t) => (
-          <div
-            key={t}
-            className="flex-1 p-3 rounded bg-gradient-to-br from-purple-600 to-indigo-600 text-center text-sm"
-          >
-            <p className="font-medium">{t.toUpperCase()}</p>
-            <button
-              onClick={handleUpgrade}
-              className="mt-2 bg-black/30 px-2 py-1 rounded text-xs"
-            >
-              Upgrade
-            </button>
+        {/* FONT SIZE */}
+        <div className="mt-6">
+          <p className="mb-2 text-sm font-medium">Font Size</p>
+          <div className="flex gap-3">
+            {["small", "normal"].map((item) => (
+              <button
+                key={item}
+                onClick={() =>
+                  setFontSize(item as "small" | "normal")
+                }
+                className={`rounded-lg px-4 py-2 text-sm
+                  ${
+                    fontSize === item
+                      ? "bg-[var(--primary)] text-white"
+                      : "bg-[var(--input)] text-[var(--text-sub)]"
+                  }`}
+              >
+                {item.charAt(0).toUpperCase() + item.slice(1)}
+              </button>
+            ))}
           </div>
-        ))}
-      </div>
+        </div>
 
-      {/* CTA */}
-      {resume.plan === "free" ? (
-        <button
-          onClick={handleDownload}
-          className="w-full bg-indigo-600 py-3 rounded-lg"
-        >
-          Download Resume
+        {/* DOWNLOAD */}
+        <button className="mt-8 w-full rounded-xl bg-[var(--primary)] py-4 text-base font-semibold text-white">
+          Download PDF
         </button>
-      ) : (
-        <button
-          onClick={handleUpgrade}
-          className="w-full bg-purple-600 py-3 rounded-lg"
-        >
-          Upgrade to Download
-        </button>
-      )}
+
+        {/* ADD SECTIONS */}
+        <div className="mt-8">
+          <p className="mb-3 text-sm font-medium">Add Sections</p>
+
+          <div className="space-y-3">
+            <AddItem label="Add Projects" />
+            <AddItem label="Add Additional Details" />
+          </div>
+        </div>
+
+        {/* DONE MESSAGE */}
+        <div className="mt-10 text-center">
+          <p className="text-lg font-semibold">
+            You&apos;re all done!
+          </p>
+          <p className="mt-2 text-sm text-[var(--text-sub)]">
+            Feel free to make additional customizations or
+            download your resume.
+          </p>
+        </div>
+      </div>
     </main>
+  );
+}
+
+/* ---------- HELPER ---------- */
+function AddItem({ label }: { label: string }) {
+  return (
+    <button className="flex w-full items-center gap-3 rounded-xl bg-[var(--input)] px-4 py-3 text-sm text-[var(--text-sub)]">
+      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--primary)] text-white">
+        +
+      </span>
+      {label}
+    </button>
   );
 }

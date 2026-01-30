@@ -1,126 +1,122 @@
 "use client";
 
-import { useResume } from "../../context/ResumeContext";
-import { useRouter } from "next/navigation";
-
-export default function Step5() {
-  const { resume, setResume } = useResume();
-  const router = useRouter();
-
-  function addEducation() {
-    if (resume.education.length >= 2) return;
-
-    setResume({
-      ...resume,
-      education: [
-        ...resume.education,
-        {
-          degree: "",
-          institute: "",
-          year: "",
-          score: "",
-          specialization: "",
-        },
-      ],
-    });
-  }
-
-  function updateEducation(
-    index: number,
-    field: keyof (typeof resume.education)[number],
-    value: string
-  ) {
-    const updated = [...resume.education];
-    updated[index] = { ...updated[index], [field]: value };
-    setResume({ ...resume, education: updated });
-  }
-
-  function handleNext() {
-    if (resume.isFresher && resume.education.length === 0) {
-      alert("Please add at least one education detail");
-      return;
-    }
-
-    router.push("/resume/page-6");
-  }
-
+export default function ResumeStepFive() {
   return (
-    <main className="max-w-md mx-auto px-4 py-10">
-      <h2 className="text-xl font-semibold mb-6">
-        Step 5 of 7 – Education
-      </h2>
-
-      {resume.education.map((edu, idx) => (
-        <div
-          key={idx}
-          className="mb-6 p-4 rounded bg-[#1a1a24]"
-        >
-          <input
-            placeholder="Degree / Qualification"
-            value={edu.degree}
-            onChange={(e) =>
-              updateEducation(idx, "degree", e.target.value)
-            }
-            className="w-full mb-2 p-2 rounded bg-[#0f0f14]"
-          />
-
-          <input
-            placeholder="Institute / University"
-            value={edu.institute}
-            onChange={(e) =>
-              updateEducation(idx, "institute", e.target.value)
-            }
-            className="w-full mb-2 p-2 rounded bg-[#0f0f14]"
-          />
-
-          <input
-            placeholder="Year (e.g. 2021 - 2024)"
-            value={edu.year}
-            onChange={(e) =>
-              updateEducation(idx, "year", e.target.value)
-            }
-            className="w-full mb-2 p-2 rounded bg-[#0f0f14]"
-          />
-
-          <input
-            placeholder="Score (optional)"
-            value={edu.score}
-            onChange={(e) =>
-              updateEducation(idx, "score", e.target.value)
-            }
-            className="w-full mb-2 p-2 rounded bg-[#0f0f14]"
-          />
-
-          <input
-            placeholder="Specialization (optional)"
-            value={edu.specialization}
-            onChange={(e) =>
-              updateEducation(
-                idx,
-                "specialization",
-                e.target.value
-              )
-            }
-            className="w-full p-2 rounded bg-[#0f0f14]"
-          />
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text-main)]">
+      {/* PAGE CONTENT */}
+      <div className="mx-auto max-w-[420px] px-4 pt-6 pb-32">
+        {/* TOP BAR */}
+        <div className="flex items-center justify-between text-sm text-[var(--text-sub)]">
+          <span>ResumeCraft</span>
+          <span>5 / 7</span>
         </div>
-      ))}
 
-      {resume.education.length < 2 && (
-        <button
-          onClick={addEducation}
-          className="w-full mb-4 bg-purple-600 py-2 rounded"
-        >
-          + Add Education
-        </button>
-      )}
+        {/* STEP HEADER */}
+        <div className="mt-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-sm font-semibold text-white">
+              5
+            </div>
+            <h1 className="text-lg font-semibold">
+              Education
+            </h1>
+          </div>
 
-      <button
-        onClick={handleNext}
-        className="w-full bg-indigo-600 py-3 rounded-lg"
-      >
-        Continue
-      </button>
+          {/* PROGRESS BAR */}
+          <div className="mt-4 h-1 w-full rounded-full bg-[var(--border)]">
+            <div className="h-1 w-[70%] rounded-full bg-[var(--primary)]" />
+          </div>
+
+          <p className="mt-3 text-sm text-[var(--text-sub)]">
+            Tell us about your educational background.
+            You can add multiple fields.
+          </p>
+        </div>
+
+        {/* FORM */}
+        <div className="mt-8 space-y-5">
+          <Field label="Degree">
+            <input
+              className="input"
+              placeholder="Enter your degree"
+            />
+          </Field>
+
+          <Field label="University / School">
+            <input
+              className="input"
+              placeholder="Enter your university or school"
+            />
+          </Field>
+
+          <Field label="Location">
+            <input
+              className="input"
+              placeholder="Enter location"
+            />
+          </Field>
+
+          {/* YEARS */}
+          <div className="grid grid-cols-2 gap-4">
+            <Field label="Start Year">
+              <input
+                className="input"
+                placeholder="YYYY"
+              />
+            </Field>
+
+            <Field label="Graduation Year">
+              <input
+                className="input"
+                placeholder="YYYY"
+              />
+            </Field>
+          </div>
+
+          {/* ADD EDUCATION */}
+          <button
+            type="button"
+            className="flex w-full items-center justify-center gap-2
+                       rounded-xl border border-dashed border-[var(--border)]
+                       py-3 text-sm text-[var(--text-sub)]"
+          >
+            <span className="flex h-6 w-6 items-center justify-center rounded-full bg-[var(--primary)] text-white">
+              +
+            </span>
+            Add Another Education
+          </button>
+        </div>
+      </div>
+
+      {/* STICKY ACTION BUTTONS */}
+      <div className="fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[var(--bg)] px-4 py-4">
+        <div className="mx-auto max-w-[420px] flex gap-3">
+          <button className="w-full rounded-xl bg-[var(--input)] py-3 text-sm font-medium text-[var(--text-sub)]">
+            Skip
+          </button>
+          <button className="w-full rounded-xl bg-[var(--primary)] py-3 text-sm font-semibold text-white">
+            Continue
+          </button>
+        </div>
+      </div>
     </main>
+  );
+}
+
+/* ---------- FIELD WRAPPER ---------- */
+function Field({
+  label,
+  children,
+}: {
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <div>
+      <label className="mb-1 block text-sm font-medium">
+        {label}
+      </label>
+      {children}
+    </div>
   );
 }

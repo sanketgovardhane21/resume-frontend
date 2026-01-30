@@ -1,128 +1,148 @@
 "use client";
 
 import { useState } from "react";
-import { useResume } from "../../context/ResumeContext";
-import { useRouter } from "next/navigation";
 
-export default function Step3() {
-  const { resume, setResume } = useResume();
-  const [skillInput, setSkillInput] = useState("");
-  const router = useRouter();
+const suggestedSkills = [
+  "Java",
+  "Machine Learning",
+  "Data Analysis",
+  "Project Management",
+  "Communication",
+  "React",
+  "Django",
+  "Git",
+  "Problem-Solving",
+  "Node.js",
+  "AWS",
+];
 
-  function addSkill() {
-    const skill = skillInput.trim();
-    if (!skill) return;
-    if (resume.skills.includes(skill)) return;
+export default function ResumeStepThree() {
+  const [skills, setSkills] = useState<string[]>([
+    "Python",
+    "Team Leadership",
+    "SQL",
+  ]);
 
-    setResume({
-      ...resume,
-      skills: [...resume.skills, skill],
-    });
-
-    setSkillInput("");
-  }
-
-  function removeSkill(skill: string) {
-    setResume({
-      ...resume,
-      skills: resume.skills.filter((s) => s !== skill),
-    });
-  }
-
-  function handleNext() {
-    if (!resume.jobRole || resume.skills.length < 3) {
-      alert("Please add job role and at least 3 skills");
-      return;
-    }
-
-    if (resume.isFresher) {
-      router.push("/resume/page-5"); // skip experience
+  const toggleSkill = (skill: string) => {
+    if (skills.includes(skill)) {
+      setSkills(skills.filter((s) => s !== skill));
     } else {
-      router.push("/resume/page-4");
+      setSkills([...skills, skill]);
     }
-  }
+  };
 
   return (
-    <main className="max-w-md mx-auto px-4 py-10">
-      <h2 className="text-xl font-semibold mb-6">
-        Step 3 of 7 – Job Role & Skills
-      </h2>
+    <main className="min-h-screen bg-[var(--bg)] text-[var(--text-main)]">
+      {/* PAGE CONTENT */}
+      <div className="mx-auto max-w-[420px] px-4 pt-6 pb-32">
+        {/* TOP BAR */}
+        <div className="flex items-center justify-between text-sm text-[var(--text-sub)]">
+          <span>ResumeCraft</span>
+          <span>3 / 7</span>
+        </div>
 
-      {/* Job Role */}
-      <input
-        value={resume.jobRole}
-        onChange={(e) =>
-          setResume({ ...resume, jobRole: e.target.value })
-        }
-        placeholder="Job role you are applying for"
-        className="w-full mb-4 p-3 rounded bg-[#1a1a24]"
-      />
+        {/* STEP HEADER */}
+        <div className="mt-6">
+          <div className="flex items-center gap-3">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-[var(--primary)] text-sm font-semibold text-white">
+              3
+            </div>
+            <h1 className="text-lg font-semibold">
+              Job Role & Skills
+            </h1>
+          </div>
 
-      {/* Fresher / Experienced */}
-      <p className="text-sm text-gray-400 mb-2">I am a</p>
-      <div className="flex gap-3 mb-6">
-        <button
-          onClick={() =>
-            setResume({ ...resume, isFresher: true })
-          }
-          className={`px-4 py-2 rounded ${
-            resume.isFresher
-              ? "bg-indigo-600"
-              : "bg-[#1a1a24]"
-          }`}
-        >
-          Fresher
-        </button>
+          {/* PROGRESS BAR */}
+          <div className="mt-4 h-1 w-full rounded-full bg-[var(--border)]">
+            <div className="h-1 w-[42%] rounded-full bg-[var(--primary)]" />
+          </div>
 
-        <button
-          onClick={() =>
-            setResume({ ...resume, isFresher: false })
-          }
-          className={`px-4 py-2 rounded ${
-            !resume.isFresher
-              ? "bg-indigo-600"
-              : "bg-[#1a1a24]"
-          }`}
-        >
-          Experienced
-        </button>
+          <p className="mt-3 text-sm text-[var(--text-sub)]">
+            Select your job role and key skills to highlight in your resume.
+          </p>
+        </div>
+
+        {/* JOB ROLE */}
+        <div className="mt-8">
+          <label className="mb-2 block text-sm font-medium">
+            Job Role
+          </label>
+
+          <div className="relative">
+            <select className="input appearance-none pr-10">
+              <option>Select Job Role</option>
+              <option>Software Engineer</option>
+              <option>Data Analyst</option>
+              <option>Backend Developer</option>
+              <option>Frontend Developer</option>
+              <option>Project Manager</option>
+            </select>
+
+            <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)]">
+              ▾
+            </span>
+          </div>
+        </div>
+
+        {/* SELECTED SKILLS */}
+        <div className="mt-6">
+          <label className="mb-2 block text-sm font-medium">
+            Key Skills
+          </label>
+
+          <div className="flex flex-wrap gap-2 rounded-xl bg-[var(--input)] p-3">
+            {skills.map((skill) => (
+              <span
+                key={skill}
+                className="rounded-lg bg-[var(--primary)] px-3 py-1.5 text-xs font-medium text-white"
+              >
+                {skill}
+              </span>
+            ))}
+
+            <input
+              className="min-w-[80px] flex-1 bg-transparent text-sm outline-none placeholder-[var(--text-muted)]"
+              placeholder="Add skill..."
+            />
+          </div>
+        </div>
+
+        {/* SUGGESTED SKILLS */}
+        <div className="mt-6">
+          <p className="mb-3 text-sm text-[var(--text-sub)]">
+            Pick from suggestions
+          </p>
+
+          <div className="flex flex-wrap gap-2">
+            {suggestedSkills.map((skill) => (
+              <button
+                key={skill}
+                onClick={() => toggleSkill(skill)}
+                className={`rounded-lg px-3 py-2 text-xs transition
+                  ${
+                    skills.includes(skill)
+                      ? "bg-[var(--primary)] text-white"
+                      : "bg-[var(--input)] text-[var(--text-sub)]"
+                  }`}
+              >
+                {skill}
+              </button>
+            ))}
+          </div>
+        </div>
       </div>
 
-      {/* Skills */}
-      <div className="mb-3">
-        <input
-          value={skillInput}
-          onChange={(e) => setSkillInput(e.target.value)}
-          placeholder="Add a skill and press Add"
-          className="w-full p-3 rounded bg-[#1a1a24]"
-        />
-        <button
-          onClick={addSkill}
-          className="w-full mt-2 bg-purple-600 py-2 rounded"
-        >
-          Add Skill
-        </button>
+      {/* STICKY ACTION BUTTONS */}
+      <div className="fixed bottom-0 left-0 right-0 border-t border-[var(--border)] bg-[var(--bg)] px-4 py-4">
+        <div className="mx-auto max-w-[420px] flex gap-3">
+          <button className="w-full rounded-xl bg-[var(--input)] py-3 text-sm font-medium text-[var(--text-sub)]">
+            Skip
+          </button>
+          <button className="w-full rounded-xl bg-[var(--primary)] py-3 text-sm font-semibold text-white">
+            Continue
+          </button>
+        </div>
       </div>
-
-      {/* Skill chips */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {resume.skills.map((skill) => (
-          <span
-            key={skill}
-            className="bg-indigo-600 px-3 py-1 rounded-full text-sm cursor-pointer"
-            onClick={() => removeSkill(skill)}
-          >
-            {skill} ✕
-          </span>
-        ))}
-      </div>
-
-      <button
-        onClick={handleNext}
-        className="w-full bg-indigo-600 py-3 rounded-lg"
-      >
-        Continue
-      </button>
     </main>
   );
 }
